@@ -25,6 +25,11 @@
   "resolved" "https://registry.npmmirror.com/@types/node/-/node-18.11.0.tgz"
   "version" "18.11.0"
 
+"@types/qs@^6.9.15":
+  "integrity" "sha512-uXHQKES6DQKKCLh441Xv/dwxOq1TVS3JPUMlEqoEglvlhR6Mxnlew/Xq/LRVHpLyk7iK3zODe1qYHIMltO7XGg=="
+  "resolved" "https://mirrors.huaweicloud.com/repository/npm/@types/qs/-/qs-6.9.15.tgz"
+  "version" "6.9.15"
+
 "@vant/icons@^1.8.0":
   "integrity" "sha512-sKfEUo2/CkQFuERxvkuF6mGQZDKu3IQdj5rV9Fm0weJXtchDSSQ+zt8qPCNUEhh9Y8shy5PzxbvAfOOkCwlCXg=="
   "resolved" "https://registry.npmmirror.com/@vant/icons/-/icons-1.8.0.tgz"
