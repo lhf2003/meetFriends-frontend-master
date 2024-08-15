@@ -62,19 +62,38 @@ const isLoading = ref(false);
 
 const onSubmit = async () => {
   isLoading.value = true; // 显示加载状态
-  const res = await myAxios.post('/user/login', {
-    userAccount: userAccount.value,
-    userPassword: userPassword.value,
-  });
-  console.log(res, '用户登录');
-  if (res.code === 0 && res.data) {
-    setCurrentUserState(res.data);
-    Toast.success('登录成功');
-    router.push('/');  // 使用 Vue Router 进行重定向
-  } else {
-    Toast.fail('登录失败');
+
+  try {
+    // 使用 Promise.race 处理超时情况
+    const res = await Promise.race([
+      myAxios.post('/user/login', {
+        userAccount: userAccount.value,
+        userPassword: userPassword.value,
+      }),
+      new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('请求超时')), 10000) // 设置10秒超时
+      )
+    ]);
+
+    // 处理成功响应
+    if (res.code === 0 && res.data) {
+      setCurrentUserState(res.data);
+      Toast.success('登录成功');
+      router.push('/');  // 使用 Vue Router 进行重定向
+    } else {
+      Toast.fail('登录失败');
+    }
+  } catch (error) {
+    // 处理异常情况
+    if (error.message === '请求超时') {
+      Toast.fail('登录超时');
+    }
+  } finally {
+    // 请求完成后，无论成功还是失败，都隐藏加载状态
+    isLoading.value = false;
   }
 };
+
 
 const showRegisterDialog = () => {
   showRegister.value = true;
