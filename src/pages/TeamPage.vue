@@ -1,7 +1,7 @@
 <template>
   <div id="teamPage">
     <div class="top-bar">
-      <van-search v-model="searchText" placeholder="搜索队伍" @search="onSearch" class="search-box"/>
+      <van-search class="search-box" v-model="searchText" @search="onSearch" placeholder="搜索队伍"/>
       <van-button class="add" icon="plus" type="primary" size="small" @click="toAddTeam">添加队伍</van-button>
       <!--      <van-button square class="add-button" type="primary" icon="plus" @click="toAddTeam">添加队伍</van-button>-->
     </div>
@@ -66,23 +66,39 @@ const teamList = ref([]);
  * @param status
  * @returns {Promise<void>}
  */
+let toastId = null; // 用于保存 Toast 的 ID 以便后续隐藏
+
 const listTeam = async (val = '', status = 0) => {
-  const res = await myAxios.get("/team/list", {
-    params: {
-      searchText: val,
-      pageNum: currentPage.value,
-      pageSize: itemsPerPage.value,
-      status,
-    },
-  });
-  if (res?.code === 0) {
-    teamList.value = res.data;
-  } else if (res?.code === 40004) {
-    Toast.fail('数据为空');
-  } else {
-    Toast.fail('失败，请刷新重试');
+  // 显示加载中提示
+  toastId = Toast.loading('加载中...', {duration: 0});
+
+  try {
+    const res = await myAxios.get('/team/list', {
+      params: {
+        searchText: val,
+        pageNum: currentPage.value,
+        pageSize: itemsPerPage.value,
+        status,
+      },
+    });
+
+    if (res?.code === 0) {
+      teamList.value = res.data;
+    } else if (res?.code === 40004) {
+      Toast.fail('数据为空');
+    } else {
+      Toast.fail('请求失败，请刷新重试');
+    }
+  } catch (error) {
+    Toast.fail('请求失败，请刷新重试');
+  } finally {
+    // 隐藏加载中提示
+    if (toastId) {
+      Toast.clear(toastId);
+    }
   }
-}
+};
+
 
 // 页面加载时只触发一次
 onMounted(() => {

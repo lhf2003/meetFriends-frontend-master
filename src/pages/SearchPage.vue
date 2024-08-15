@@ -37,21 +37,36 @@ const router = useRouter()
 const searchText = ref('');
 
 const originTagList = [{
-  text: '性别',
+  text: '编程语言',
   children: [
-    {text: '男', id: '男'},
-    {text: '女', id: '女'},
+    {text: 'Java', id: 'Java'},
+    {text: 'Python', id: 'Python'},
+    {text: 'C/C++', id: 'C/C++'},
+    {text: 'JavaScript', id: 'JavaScript'},
+    {text: 'Go', id: 'Go'},
+    {text: 'TypeScript', id: 'TypeScript'},
+    {text: 'PHP', id: 'PHP'},
   ],
 },
   {
-    text: '年级',
+    text: '身份',
     children: [
       {text: '大一', id: '大一'},
       {text: '大二', id: '大二'},
-      {text: '大3', id: '大3'},
-      {text: '大4', id: '大4'},
-      {text: '大5', id: '大5aaaaaaa'},
-      {text: '大6', id: '大6aaaaaaa'},
+      {text: '大三', id: '大三'},
+      {text: '研究生', id: '研究生'},
+      {text: '博士', id: '博士'},
+    ],
+  },
+  {
+    text: '状况',
+    children: [
+      {text: '在校', id: '在校'},
+      {text: '实习', id: '实习'},
+      {text: '求职', id: '求职'},
+      {text: '自学', id: '自学'},
+      {text: '已毕业', id: '已毕业'},
+      {text: '家里蹲', id: '家里蹲'},
     ],
   },
 ]
