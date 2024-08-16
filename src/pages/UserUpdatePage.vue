@@ -6,6 +6,8 @@
     <van-cell title="头像" is-link to="/user/edit">
       <img style="height: 48px" :src="user.userAvatar"/>
     </van-cell>
+    <van-cell title="标签" is-link to="/user/edit" :value="user.userTag"
+              @click="toEdit('tags', '标签', user.tags)"/>
     <van-cell title="性别" is-link :value="user.gender" @click="toEdit('gender', '性别', user.gender)"/>
     <van-cell title="电话" is-link to="/user/edit" :value="user.phone" @click="toEdit('phone', '电话', user.phone)"/>
     <van-cell title="邮箱" is-link to="/user/edit" :value="user.email" @click="toEdit('email', '邮箱', user.email)"/>

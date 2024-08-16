@@ -20,7 +20,7 @@ import {ref} from "vue";
 import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
 import {getCurrentUser} from "../services/user";
-import {getCurrentUserState} from "../states/user";
+import {getCurrentUserState, setCurrentUserState} from "../states/user";
 
 const route = useRoute();
 const router = useRouter();
@@ -39,7 +39,7 @@ const onSubmit = async () => {
     return;
   }
 
-  console.log(8888888,currentUser, '当前用户')
+  console.log(8888888, currentUser, '当前用户')
 
   const res = await myAxios.post('/user/update', {
     'id': currentUser.id,
@@ -48,6 +48,7 @@ const onSubmit = async () => {
   console.log(res, '更新请求');
   if (res.code === 0 && res.data > 0) {
     Toast.success('修改成功');
+    await setCurrentUserState(res.data);
     router.back();
   } else {
     Toast.fail('修改错误');

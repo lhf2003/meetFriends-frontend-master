@@ -16,6 +16,18 @@
           <template #title>
             <div class="user-name">{{ user.userName }}</div>
             <div class="user-id">ID: {{ user.id }}</div>
+            <div class="tags">
+              <van-tag
+                  class="tags"
+                  plain
+                  type="danger"
+                  v-for="tag in user.tags"
+                  :key="tag"
+                  style="margin-right: 3px; margin-top: 8px"
+              >
+                {{ tag }}
+              </van-tag>
+            </div>
           </template>
           <van-icon name="edit" @click="toUpdate" size="20px"/>
         </van-cell>
@@ -49,7 +61,7 @@ import myAxios from "../plugins/myAxios";
 import {Toast} from "vant";
 import {getCurrentUser} from "../services/user";
 import ast from 'vant';
-import {setCurrentUserState} from "../states/user";
+import {getCurrentUserState, setCurrentUserState} from "../states/user";
 
 const router = useRouter();
 const user = ref();
@@ -89,8 +101,17 @@ const toLogout = async () => {
 }
 
 onMounted(async () => {
-  user.value = await getCurrentUser();
-})
+  user.value = await getCurrentUserState();
+  // 处理 tags 字符串
+  if (user.value.tags && typeof user.value.tags === 'string') {
+    try {
+      user.value.tags = JSON.parse(user.value.tags);
+    } catch (e) {
+      console.error('解析 tags 出错:', e);
+    }
+  }
+});
+
 const showPopup = () => {
   show.value = true;
 };
@@ -118,5 +139,9 @@ const toUpdate = () => {
   margin-top: 17px;
   color: gray;
   font-size: 15px;
+}
+
+.tags {
+  margin-left: 5px;
 }
 </style>

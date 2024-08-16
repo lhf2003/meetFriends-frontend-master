@@ -1,4 +1,8 @@
 <template>
+  <van-notice-bar
+      left-icon="volume-o"
+      text="欢迎使用MeetFriends！心动模式加载可能比较缓慢，正在处理中"
+  />
   <van-cell center title="心动模式">
     <template #right-icon>
       <van-switch v-model="isMatchMode" size="24"/>

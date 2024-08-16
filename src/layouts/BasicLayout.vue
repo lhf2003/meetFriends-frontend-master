@@ -37,7 +37,7 @@ import myAxios from "../plugins/myAxios";
 
 const router = useRouter();
 const route = useRoute();
-const DEFAULT_TITLE = '伙伴匹配';
+const DEFAULT_TITLE = 'MeetFriends';
 const title = ref(DEFAULT_TITLE);
 const loading = ref(false);
 let currentUser = ref(getCurrentUserState());
