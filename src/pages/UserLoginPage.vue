@@ -27,17 +27,32 @@
       </div>
       <div class="register-link">
         <van-button class="register-button" type="link" @click="showRegisterDialog">没有账号？注册</van-button>
+        <van-notify v-model:show="showNotify" type="success">
+          <van-icon name="bell" style="margin-right: 4px;"/>
+          <span>目前邮件注册只支持Gmail、QQ、163</span>
+        </van-notify>
       </div>
     </van-form>
   </div>
 
-  <van-dialog v-model:show="showRegister" title="注册" show-cancel-button @confirm="onConfirmRegister">
+  <van-dialog v-model:show="showRegister" title="注册" show-cancel-button @confirm="onConfirmRegister"
+              @cancel="onCancelRegister">
     <van-form @submit.prevent="onConfirmRegister">
-      <van-field v-model="newUserAccount" name="newUsername" label="用户名" placeholder="请输入用户名" required/>
-      <van-field v-model="newPassword" name="newPassword" label="密码" type="password" placeholder="请输入密码"
-                 required/>
-      <van-field v-model="checkPassword" name="checkPassword" label="确认密码" type="password"
-                 placeholder="请再次输入密码" required/>
+      <div>
+        <van-field v-model="newUserAccount" name="newUsername" label="用户名" placeholder="请输入用户名" required/>
+        <van-field v-model="registerMethod" name="registerMethod" label="邮箱/手机号" placeholder="请输入邮箱或手机号"
+                   required/>
+        <van-field v-model="newPassword" name="newPassword" label="密码" type="password" placeholder="请输入密码"
+                   required/>
+        <van-field v-model="checkPassword" name="checkPassword" label="确认密码" type="password"
+                   placeholder="请再次输入密码" required/>
+      </div>
+      <div class="verification-container">
+        <van-field v-model="verifyCode" name="verifyCode" label="验证码"
+                   placeholder="请输入验证码" required/>
+        <van-count-down v-if="showCountDown" :time="time" format="ss" :auto-start="start"/>
+        <van-button block type="primary" size="small" @click="getVerificationCode">点击获取</van-button>
+      </div>
     </van-form>
   </van-dialog>
 </template>
@@ -53,18 +68,23 @@ const router = useRouter();
 const route = useRoute();
 
 const userAccount = ref('');
+const registerMethod = ref('');
 const userPassword = ref('');
 const newUserAccount = ref('');
 const newPassword = ref('');
 const checkPassword = ref('');
+const verifyCode = ref('');
 const showRegister = ref(false);
 const isLoading = ref(false);
+const showNotify = ref(false);
+const time = ref(60 * 1000);
+const start = ref(false);
+const showCountDown = ref(false)
 
 const onSubmit = async () => {
   isLoading.value = true; // 显示加载状态
 
   try {
-    // 使用 Promise.race 处理超时情况
     const res = await Promise.race([
       myAxios.post('/user/login', {
         userAccount: userAccount.value,
@@ -75,7 +95,6 @@ const onSubmit = async () => {
       )
     ]);
 
-    // 处理成功响应
     if (res.code === 0 && res.data) {
       setCurrentUserState(res.data);
       Toast.success('登录成功');
@@ -84,18 +103,16 @@ const onSubmit = async () => {
       Toast.fail('登录失败');
     }
   } catch (error) {
-    // 处理异常情况
     if (error.message === '请求超时') {
       Toast.fail('登录超时');
     }
   } finally {
-    // 请求完成后，无论成功还是失败，都隐藏加载状态
     isLoading.value = false;
   }
 };
 
-
 const showRegisterDialog = () => {
+  showNotify.value = true;
   showRegister.value = true;
 };
 
@@ -103,17 +120,47 @@ const onConfirmRegister = async () => {
   try {
     const res = await myAxios.post('/user/register', {
       userAccount: newUserAccount.value,
+      registerMethod: registerMethod.value,
       userPassword: newPassword.value,
       checkPassword: checkPassword.value,
+      verifyCode: verifyCode.value,
     });
-    if (res.data === true) {
+    if (res.code === 0) {
       Toast.success('注册成功');
     } else {
       Toast.fail('注册失败');
     }
-    showRegister.value = false;
   } catch (error) {
-    Toast.fail('注册失败');
+    Toast.fail('验证码错误');
+  }
+  showNotify.value = false;
+  showRegister.value = false;
+};
+
+const onCancelRegister = () => {
+  showNotify.value = false;
+  showRegister.value = false;
+}
+
+// 添加获取验证码方法
+const getVerificationCode = async () => {
+  try {
+    // 发送 GET 请求获取验证码
+    const res = await myAxios.get('/user/get/verifyCode', {
+      params: {
+        registerMethod: registerMethod.value
+      }
+    });
+
+    if (res.code === 0) {
+      showCountDown.value = true;
+      start.value = true;
+      Toast.success('验证码已发送');
+    } else {
+      Toast.fail(res.data.message || '验证码发送失败，请重试。');
+    }
+  } catch (error) {
+    Toast.fail('获取验证码错误');
   }
 };
 </script>
@@ -151,5 +198,24 @@ const onConfirmRegister = async () => {
 
 .register-button:active {
   color: black;
+}
+
+.verification-container {
+  display: flex;
+  align-items: center;
+}
+
+.verification-container .van-field {
+  flex: 1;
+}
+
+.verification-container .van-count-down {
+  margin-right: 5px;
+}
+
+.verification-container .van-button {
+  width: 67px;
+  margin-right: 10px;
+  flex-shrink: 0;
 }
 </style>
