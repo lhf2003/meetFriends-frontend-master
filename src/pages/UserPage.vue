@@ -102,15 +102,21 @@ const toLogout = async () => {
 
 onMounted(async () => {
   user.value = await getCurrentUserState();
-  // 处理 tags 字符串
-  if (user.value.tags && typeof user.value.tags === 'string') {
-    try {
-      user.value.tags = JSON.parse(user.value.tags);
-    } catch (e) {
-      console.error('解析 tags 出错:', e);
+  if (user.value) {
+    // 处理 tags 字符串
+    user.value.tags = user.value.tags || '[]'; // 给 tags 设置默认值
+    if (typeof user.value.tags === 'string') {
+      try {
+        user.value.tags = JSON.parse(user.value.tags);
+      } catch (e) {
+        console.error('解析 tags 出错:', e);
+      }
     }
+  } else {
+    console.error('用户数据为空');
   }
 });
+
 
 const showPopup = () => {
   show.value = true;
