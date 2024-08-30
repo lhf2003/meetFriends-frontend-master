@@ -55,6 +55,7 @@ import moment from "moment";
 import {getCurrentUserState, setCurrentUserState} from "../states/user";
 import {Toast} from "vant";
 import myAxios from "../plugins/myAxios";
+import {getCurrentUser} from "../services/user";
 
 const user = ref();
 const showImagePopup = ref(false);
@@ -64,7 +65,6 @@ const showNotify = ref(false);
 
 onMounted(async () => {
   user.value = await getCurrentUserState();
-  console.log(8888888, user.value.userAvatar);
   user.value.createTime = moment(user.value.createTime).format('YYYY-MM-DD');
 });
 
@@ -120,8 +120,7 @@ const afterRead = async (file) => {
 
     if (response.code === 0) {  // 根据实际返回的状态码调整
       user.value.userAvatar = response.data.data;  // 更新头像 URL
-      console.log(99999, user.value.userAvatar);
-      setCurrentUserState(user.value);
+      getCurrentUser();
       Toast.success('上传成功');
       showUploadPopup.value = false;  // 关闭上传弹窗
     } else {

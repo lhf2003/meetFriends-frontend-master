@@ -101,7 +101,7 @@ const toLogout = async () => {
 }
 
 onMounted(async () => {
-  user.value = await getCurrentUserState();
+  user.value = await getCurrentUser();
   if (user.value) {
     // 处理 tags 字符串
     user.value.tags = user.value.tags || '[]'; // 给 tags 设置默认值
