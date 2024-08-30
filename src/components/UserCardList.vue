@@ -9,7 +9,7 @@
   >
     <van-card
         :desc="user.userProfile"
-        :title="`${user.userName}（${user.planetCode}）`"
+        :title="`${user.userName}`"
         :thumb="user.userAvatar"
     >
       <template #tags>
@@ -31,8 +31,8 @@
 </template>
 
 <script setup lang="ts">
-import { UserType } from "../models/user";
-import { useRouter } from 'vue-router';
+import {UserType} from "../models/user";
+import {useRouter} from 'vue-router';
 
 interface UserCardListProps {
   loading: boolean;
@@ -62,5 +62,4 @@ const handleContact = async (user: UserType) => {
 </script>
 
 <style scoped>
-/* 根据需要添加样式 */
 </style>
