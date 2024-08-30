@@ -8,7 +8,10 @@
             label="账号"
             placeholder="请输入账号"
             required
-            :rules="[{ required: true, message: '请填写用户名' }]"
+            :rules="[
+            { required: true, message: '请填写用户名' },
+            { pattern: /^.{4,}$/, message: '账号长度必须大于等于4位' }
+          ]"
         />
         <van-field
             v-model="userPassword"
@@ -17,7 +20,10 @@
             label="密码"
             placeholder="请输入密码"
             required
-            :rules="[{ required: true, message: '请填写密码' }]"
+            :rules="[
+            { required: true, message: '请填写密码' },
+            { pattern: /^.{8,}$/, message: '密码长度必须大于等于8位' }
+          ]"
         />
       </van-cell-group>
       <div class="button-container">
@@ -28,7 +34,7 @@
       <div class="register-link">
         <van-button class="register-button" type="link" @click="showRegisterDialog">没有账号？注册</van-button>
         <van-notify v-model:show="showNotify" type="success">
-          <van-icon name="bell" style="margin-right: 4px;"/>
+          <van-icon name="bell" style="margin-right: 4px;" />
           <span>目前邮件注册只支持Gmail、QQ、163</span>
         </van-notify>
       </div>
@@ -39,18 +45,67 @@
               @cancel="onCancelRegister">
     <van-form @submit.prevent="onConfirmRegister">
       <div>
-        <van-field v-model="newUserAccount" name="newUsername" label="用户名" placeholder="请输入用户名" required/>
-        <van-field v-model="registerMethod" name="registerMethod" label="邮箱/手机号" placeholder="请输入邮箱或手机号"
-                   required/>
-        <van-field v-model="newPassword" name="newPassword" label="密码" type="password" placeholder="请输入密码"
-                   required/>
-        <van-field v-model="checkPassword" name="checkPassword" label="确认密码" type="password"
-                   placeholder="请再次输入密码" required/>
+        <van-field
+            v-model="newUserAccount"
+            name="newUsername"
+            label="用户名"
+            placeholder="请输入用户名"
+            required
+            :rules="[
+            { required: true, message: '用户名不能为空' },
+            { pattern: /^.{4,}$/, message: '用户名长度必须大于等于4位' }
+          ]"
+        />
+        <van-field
+            v-model="registerMethod"
+            name="registerMethod"
+            label="邮箱/手机号"
+            placeholder="请输入邮箱或手机号"
+            required
+            :rules="[
+            { required: true, message: '请填写邮箱或手机号' },
+            { pattern: /^(1\d{10}|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$/, message: '请输入有效的手机号或邮箱' }
+          ]"
+        />
+        <van-field
+            v-model="nickName"
+            name="nickName"
+            label="昵称"
+            placeholder="请输入昵称"
+            required
+            :rules="[
+            { required: true, message: '昵称不能为空' },
+            { pattern: /^.{3,}$/, message: '昵称长度必须大于等于3位' }
+          ]"
+        />
+        <van-field
+            v-model="newPassword"
+            name="newPassword"
+            label="密码"
+            type="password"
+            placeholder="请输入密码"
+            required
+            :rules="[
+            { required: true, message: '密码不能为空' },
+            { pattern: /^.{8,}$/, message: '密码长度必须大于等于8位' }
+          ]"
+        />
+        <van-field
+            v-model="checkPassword"
+            name="checkPassword"
+            label="确认密码"
+            type="password"
+            placeholder="请再次输入密码"
+            required
+            :rules="[
+            { required: true, message: '请再次输入密码' },
+            { validator: matchPasswords, message: '两次输入的密码不一致' }
+          ]"
+        />
       </div>
       <div class="verification-container">
-        <van-field v-model="verifyCode" name="verifyCode" label="验证码"
-                   placeholder="请输入验证码" required/>
-        <van-count-down v-if="showCountDown" :time="time" format="ss" :auto-start="start"/>
+        <van-field v-model="verifyCode" name="verifyCode" label="验证码" placeholder="请输入验证码" required />
+        <van-count-down v-if="showCountDown" :time="time" format="ss" :auto-start="start" />
         <van-button block type="primary" size="small" @click="getVerificationCode">点击获取</van-button>
       </div>
     </van-form>
@@ -71,6 +126,7 @@ const userAccount = ref('');
 const registerMethod = ref('');
 const userPassword = ref('');
 const newUserAccount = ref('');
+const nickName = ref('');
 const newPassword = ref('');
 const checkPassword = ref('');
 const verifyCode = ref('');
@@ -81,6 +137,9 @@ const time = ref(60 * 1000);
 const start = ref(false);
 const showCountDown = ref(false)
 
+const matchPasswords = (value) => {
+  return value === newPassword.value;
+};
 const onSubmit = async () => {
   isLoading.value = true; // 显示加载状态
 

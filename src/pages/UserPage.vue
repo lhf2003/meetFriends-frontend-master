@@ -37,7 +37,7 @@
     <van-cell title="我加入的队伍" is-link to="/user/team/join"/>
     <van-cell title="关于我们" is-link @click="showPopup"/>
     <van-popup v-model:show="show" :style="{width: '300px', height: '300px', padding: '15px'}">
-      MeetFriends是一款服务用户找到适合自己圈子的APP，可以创建或加入队伍发现志同道合的伙伴，也可以通过心动模式匹配与你相似的用户。<br>
+      在这个快节奏的现代社会中，寻找志同道合的伙伴变得至关重要。MeetFriends 应运而生，致力于为你打造一个专属的社交圈子，让你轻松遇见那些与你心灵契合的朋友。<br>
       详细见：<br>
       如果遇到任何问题请联系：15671389027
     </van-popup>
