@@ -1,7 +1,7 @@
 <template>
   <van-notice-bar
       left-icon="volume-o"
-      text="欢迎使用MeetFriends！心动模式加载可能比较缓慢，正在处理中"
+      text="欢迎使用MeetFriends！心动模式匹配可能比较缓慢，请耐心等待，感谢您的支持"
   />
   <van-cell center title="心动模式">
     <template #right-icon>
@@ -33,7 +33,7 @@ const loadData = async () => {
     userListData = await myAxios.get('/user/match', {params: {num}})
         .then((response) => {
           console.log('/user/match succeed', response);
-          return response?.data?.records;
+          return response?.data;
         })
         .catch((error) => {
           console.error('/user/match error', error);
