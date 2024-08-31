@@ -21,6 +21,7 @@
     <van-cell title="性别" is-link :value="user.gender" @click="toEdit('gender', '性别', user.gender)"/>
     <van-cell title="电话" is-link :value="user.phone" @click="toEdit('phone', '电话', user.phone)"/>
     <van-cell title="邮箱" is-link :value="user.email" @click="toEdit('email', '邮箱', user.email)"/>
+    <van-cell title="地址" is-link :value="user.address" @click="toEdit('address', '地址', user.address)"/>
     <van-cell title="注册时间" :value="user.createTime"/>
 
     <van-notify v-model:show="showNotify" type="success">
@@ -52,7 +53,6 @@
 import {useRouter} from "vue-router";
 import {nextTick, onMounted, ref} from "vue";
 import moment from "moment";
-import {getCurrentUserState, setCurrentUserState} from "../states/user";
 import {Toast} from "vant";
 import myAxios from "../plugins/myAxios";
 import {getCurrentUser} from "../services/user";
@@ -64,7 +64,7 @@ const router = useRouter();
 const showNotify = ref(false);
 
 onMounted(async () => {
-  user.value = await getCurrentUserState();
+  user.value = await getCurrentUser();
   user.value.createTime = moment(user.value.createTime).format('YYYY-MM-DD');
 });
 

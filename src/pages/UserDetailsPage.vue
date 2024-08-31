@@ -21,22 +21,22 @@
     <van-cell
         title="年龄"
         :value="userDetails.age"
-        icon="age"
     />
     <van-cell
-        title="电话"
+        title="联系电话"
         :value="userDetails.phone"
-        icon="phone"
     />
     <van-cell
         title="邮箱"
         :value="userDetails.email"
-        icon="email"
     />
     <van-cell
         title="个人简介"
         :value="userDetails.userProfile"
-        icon="info"
+    />
+    <van-cell
+        title="地址"
+        :value="userDetails.address"
     />
   </van-cell-group>
 </template>

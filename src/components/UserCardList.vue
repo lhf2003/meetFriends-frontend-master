@@ -24,6 +24,7 @@
         </van-tag>
       </template>
       <template #footer>
+        <div v-if="user.distance"> 距离: {{ (user.distance / 1000).toFixed(1) }} 千米</div> <!-- 显示距离 -->
         <van-button type="default" size="mini" @click="handleContact(user)">联系我</van-button>
       </template>
     </van-card>
