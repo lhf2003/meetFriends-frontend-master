@@ -73,8 +73,8 @@ onMounted(async () => {
   }
 
   // 连接 WebSocket
-  // ws.value = new WebSocket('ws://meetfei.cn:7777/api/chat');
-  ws.value = new WebSocket('ws://localhost:8080/api/chat');
+  ws.value = new WebSocket('ws://meetfei.cn:7777/api/chat');//线上环境
+  // ws.value = new WebSocket('ws://localhost:8080/api/chat'); //本地环境
   ws.value.onopen = () => {
     isWsConnected.value = true; // WebSocket 连接建立成功
   };
