@@ -6,6 +6,7 @@ import Vant from 'vant';
 import 'vant/lib/index.css';
 import '../global.css';
 import BasicLayout from "./layouts/BasicLayout.vue";
+import store from './store'
 
 const app = createApp(App);
 app.use(Vant);
@@ -17,4 +18,5 @@ const router = VueRouter.createRouter({
 });
 
 app.use(router);
+app.use(store); // vuex共享数据
 app.mount('#app');

@@ -12,6 +12,10 @@ import UserLoginPage from "../pages/UserLoginPage.vue";
 import TeamAddPage from "../pages/TeamAddPage.vue";
 import TeamUpdatePage from "../pages/TeamUpdatePage.vue";
 import UserDetailsPage from "../pages/UserDetailsPage.vue";
+import ChatPage from "../pages/ChatPage.vue";
+import UserFansPage from "../pages/UserFansPage.vue";
+import UserFollowersPage from "../pages/UserFollowersPage.vue";
+import UserChatPage from "../pages/UserChatPage.vue";
 
 const routes = [
     {path: '/', component: Index},
@@ -34,6 +38,10 @@ const routes = [
             userDetails: route.query.userDetails ? JSON.parse(route.query.userDetails as string) : {}
         }),
     },
+    {path: '/chat', title: '消息', component: ChatPage},
+    {path: '/user/fans', title:'粉丝列表', component: UserFansPage},
+    {path: '/user/followers', title:'关注列表', component: UserFollowersPage},
+    {path: '/chat/private',title:'私聊', component: UserChatPage},
 ];
 
 export default routes;

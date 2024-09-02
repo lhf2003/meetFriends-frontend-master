@@ -7,7 +7,7 @@
       @click-right="onClickRight"
   >
     <template #right v-if="showRightButton">
-      <van-button class="login-button" v-if="!currentUser" type="primary" to="/user/login">登录</van-button>
+      <van-button class="login-button" v-if="currentUser==null" type="primary" to="/user/login">登录</van-button>
       <van-icon v-else name="search" size="18"/>
     </template>
   </van-nav-bar>
@@ -23,7 +23,8 @@
   <van-tabbar route @change="onChange">
     <van-tabbar-item to="/" icon="home-o" name="index">主页</van-tabbar-item>
     <van-tabbar-item to="/team" icon="search" name="team">队伍</van-tabbar-item>
-    <van-tabbar-item to="/user" icon="friends-o" name="user">个人</van-tabbar-item>
+    <van-tabbar-item to="/chat" icon="chat-o" name="chat">消息</van-tabbar-item>
+    <van-tabbar-item to="/user" icon="user-o" name="user">个人</van-tabbar-item>
   </van-tabbar>
 </template>
 
@@ -31,9 +32,8 @@
 import {useRouter, useRoute} from 'vue-router';
 import {ref, watch, onMounted} from 'vue';
 import routes from '../config/route';
-import {Toast} from 'vant';
+import {Dialog, Toast} from 'vant';
 import {getCurrentUserState} from "../states/user";
-import myAxios from "../plugins/myAxios";
 
 const router = useRouter();
 const route = useRoute();
@@ -48,11 +48,11 @@ const showLeftArrow = ref(true);
 const onRefresh = () => {
   loading.value = true;
   // 模拟异步操作，例如网络请求
-  setTimeout(() => {
-    currentUser.value = getCurrentUserState();
-    Toast.success('加载成功');
-    loading.value = false;
-  }, 1000); // 假设请求耗时 1 秒
+    setTimeout(() => {
+      currentUser.value = getCurrentUserState();
+      Toast.success('加载成功');
+      loading.value = false;
+    }, 1000); // 假设请求耗时 1 秒
 };
 
 router.beforeEach((to, from, next) => {
@@ -69,8 +69,8 @@ router.beforeEach((to, from, next) => {
     showLeftArrow.value = true;
     showLeftText.value = '返回';
   }
-  // 设置哪些页面需要显示右侧按钮
-  const noRightButtonPages = ['/user/login']; // 需要排除右侧按钮的页面路径
+  // 需要排除右侧按钮的页面路径
+  const noRightButtonPages = ['/user/login'];
   showRightButton.value = !noRightButtonPages.includes(toPath);
   next();
 });
@@ -99,6 +99,38 @@ watch(route, () => {
     loading.value = false;
   }, 1000);
 });
+
+onMounted(() => {
+  // 检查 localStorage 中是否存在访问标志
+  const hasVisited = localStorage.getItem('hasVisited');
+
+  // 如果没有访问过，弹出提示框并记录访问状态
+  if (!hasVisited) {
+    showDialog();
+    localStorage.setItem('hasVisited', 'true'); // 设置访问标志
+  }
+});
+
+const showDialog = () => {
+  Dialog.alert({
+    title: '温馨提示',
+    messageAlign: "left",
+    message: `
+      <div style="line-height: 1;font-size: 12px">
+        欢迎访问 MeetFriends！<br/>
+        请仔细阅读以下提示，以获得最佳体验：<br/>
+        1. 避免通过外网访问，部分资源可能无法加载<br/>
+        2. 手机验证码注册暂不可用，请使用邮箱注册。<br/>
+        3. 如果注册遇到问题，可使用测试账号登录：<br/>
+           账号：admin 密码：12345678<br/>
+        如有任何问题，请联系管理员：<br/>
+        <a href="mailto:2385107101@qq.com">2385107101@qq.com</a><br/>
+        我们会尽快处理您的反馈并回复您。感谢您的理解！
+      </div>
+    `,
+    allowHtml: true,  // 允许 HTML 内容
+  })
+};
 </script>
 
 <style scoped>
