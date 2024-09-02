@@ -211,7 +211,7 @@ const onConfirmRegister = async () => {
     if (res.code === 0) {
       Toast.success('注册成功');
     } else {
-      Toast.fail('注册失败');
+      Toast.fail(res?.description);
     }
   } catch (error) {
     Toast.fail('验证码错误');
