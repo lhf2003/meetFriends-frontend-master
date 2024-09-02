@@ -249,7 +249,6 @@ const onConfirmFindPassword = async () => {
 const onCancelFindPassword = () => {
   showForgetPassword.value = false;
 }
-// 添加获取验证码方法 verifyType：2表示注册 3表示找回密码
 const getVerificationCode = async () => {
   try {
     // 发送 GET 请求获取验证码
