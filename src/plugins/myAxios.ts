@@ -3,7 +3,7 @@ import axios, {AxiosInstance} from "axios";
 const isDev = process.env.NODE_ENV === 'development';
 
 const myAxios: AxiosInstance = axios.create({
-    baseURL: isDev ? 'http://localhost:8080/api' : 'http://139.159.143.140:7777/api',
+    baseURL: isDev ? 'http://localhost:8080/api' : 'http://meetfei.cn:7777/api',
 });
 
 myAxios.defaults.withCredentials = true; // 配置为true
@@ -24,7 +24,7 @@ myAxios.interceptors.response.use(function (response) {
     // 未登录则跳转到登录页
     if (response?.data?.code === 40100) {
         const redirectUrl = window.location.href;
-        window.location.href = `/user/login?redirect=${redirectUrl}`;
+        window.location.href = `/user/login`;
     }
     // Do something with response data
     return response.data;

@@ -31,16 +31,33 @@
           登录
         </van-button>
       </div>
-      <div class="register-link">
-        <van-button class="register-button" type="link" @click="showRegisterDialog">没有账号？注册</van-button>
-        <van-notify v-model:show="showNotify" type="success">
-          <van-icon name="bell" style="margin-right: 4px;" />
-          <span>目前邮件注册只支持Gmail、QQ、163</span>
-        </van-notify>
+      <div class="link-container">
+        <a class="forgot-password-link" @click="onForgotPasswordClick">忘记密码</a>
+        <a class="register-link" @click="showRegisterDialog">没有账号？注册</a>
       </div>
+      <van-notify v-model:show="showNotify" type="success">
+        <van-icon name="bell" style="margin-right: 4px;"/>
+        <span>目前邮件注册只支持Gmail、QQ、163</span>
+      </van-notify>
     </van-form>
   </div>
-
+  <van-dialog v-model:show="showForgetPassword" title="找回密码" show-cancel-button @confirm="onConfirmFindPassword"
+              @cancel="onCancelFindPassword">
+    <van-form @submit.prevent="onConfirmFindPassword">
+      <van-field
+          v-model="email"
+          name="email"
+          label="邮箱"
+          placeholder="请输入邮箱"
+          required
+          :rules="[
+            { required: true, message: '请填写邮箱' },
+            { pattern: /^([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$/, message: '请输入有效邮箱' }
+          ]"
+      />
+    </van-form>
+  </van-dialog>
+  <!--注册弹出框  -->
   <van-dialog v-model:show="showRegister" title="注册" show-cancel-button @confirm="onConfirmRegister"
               @cancel="onCancelRegister">
     <van-form @submit.prevent="onConfirmRegister">
@@ -57,7 +74,7 @@
           ]"
         />
         <van-field
-            v-model="registerMethod"
+            v-model="verifyMethod"
             name="registerMethod"
             label="邮箱/手机号"
             placeholder="请输入邮箱或手机号"
@@ -104,8 +121,8 @@
         />
       </div>
       <div class="verification-container">
-        <van-field v-model="verifyCode" name="verifyCode" label="验证码" placeholder="请输入验证码" required />
-        <van-count-down v-if="showCountDown" :time="time" format="ss" :auto-start="start" />
+        <van-field v-model="verifyCode" name="verifyCode" label="验证码" placeholder="请输入验证码" required/>
+        <van-count-down v-if="showCountDown" :time="time" format="ss" :auto-start="start"/>
         <van-button block type="primary" size="small" @click="getVerificationCode">点击获取</van-button>
       </div>
     </van-form>
@@ -123,19 +140,21 @@ const router = useRouter();
 const route = useRoute();
 
 const userAccount = ref('');
-const registerMethod = ref('');
+const email = ref('');
+const verifyMethod = ref('');
+const verifyCode = ref('');
 const userPassword = ref('');
 const newUserAccount = ref('');
 const nickName = ref('');
 const newPassword = ref('');
 const checkPassword = ref('');
-const verifyCode = ref('');
 const showRegister = ref(false);
 const isLoading = ref(false);
 const showNotify = ref(false);
 const time = ref(60 * 1000);
 const start = ref(false);
 const showCountDown = ref(false)
+const showForgetPassword = ref(false);
 
 const matchPasswords = (value) => {
   return value === newPassword.value;
@@ -169,17 +188,22 @@ const onSubmit = async () => {
     isLoading.value = false;
   }
 };
-
+const onForgotPasswordClick = () => {
+  showForgetPassword.value = true;
+}
 const showRegisterDialog = () => {
   showNotify.value = true;
   showRegister.value = true;
 };
 
+/**
+ * 提交注册
+ */
 const onConfirmRegister = async () => {
   try {
     const res = await myAxios.post('/user/register', {
       userAccount: newUserAccount.value,
-      registerMethod: registerMethod.value,
+      registerMethod: verifyMethod.value,
       userPassword: newPassword.value,
       checkPassword: checkPassword.value,
       verifyCode: verifyCode.value,
@@ -200,14 +224,38 @@ const onCancelRegister = () => {
   showNotify.value = false;
   showRegister.value = false;
 }
+/**
+ * 找回密码
+ */
+const onConfirmFindPassword = async () => {
+  try {
+    const res = await myAxios.get('/user/find/password', {
+      params: {
+        email: email.value,
+      }
+    });
+    if (res.data === 1) {
+      Toast.success('重置密码成功');
+      // 修改密码
+    } else {
+      Toast.fail('重置密码失败');
+    }
+  } catch (error) {
+    Toast.fail('重置密码失败');
+  }
+  showForgetPassword.value = false;
+};
 
-// 添加获取验证码方法
+const onCancelFindPassword = () => {
+  showForgetPassword.value = false;
+}
+// 添加获取验证码方法 verifyType：2表示注册 3表示找回密码
 const getVerificationCode = async () => {
   try {
     // 发送 GET 请求获取验证码
     const res = await myAxios.get('/user/get/verifyCode', {
       params: {
-        registerMethod: registerMethod.value
+        registerMethod: verifyMethod.value,
       }
     });
 
@@ -236,28 +284,30 @@ const getVerificationCode = async () => {
   margin-bottom: 16px;
 }
 
-.register-link {
-  text-align: right;
+.link-container {
+  display: flex;
+  justify-content: space-between;
   margin-top: 8px;
 }
 
-.register-button {
-  text-align: right;
-  background-color: transparent;
+.forgot-password-link,
+.register-link {
   color: #409EFF;
-  padding: 0;
-  margin: 0;
   font-size: 14px;
-  border-width: 0;
+  cursor: pointer;
+  text-decoration: none;
 }
 
-.register-button:hover {
+.forgot-password-link:hover,
+.register-link:hover {
   color: orange;
 }
 
-.register-button:active {
+.forgot-password-link:active,
+.register-link:active {
   color: black;
 }
+
 
 .verification-container {
   display: flex;
