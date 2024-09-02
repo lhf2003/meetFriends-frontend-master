@@ -33,6 +33,8 @@
         </van-cell>
       </van-cell-group>
     </div>
+    <van-cell title="粉丝列表" is-link to="/user/fans" :value="fansNum"/>
+    <van-cell title="关注列表" is-link to="/user/followers" :value="followNum"/>
     <van-cell title="我创建的队伍" is-link to="/user/team/create"/>
     <van-cell title="我加入的队伍" is-link to="/user/team/join"/>
     <van-cell title="关于我们" is-link @click="showPopup"/>
@@ -66,6 +68,10 @@ import {getCurrentUserState, setCurrentUserState} from "../states/user";
 const router = useRouter();
 const user = ref();
 const show = ref(false);
+// 粉丝数
+const fansNum = ref(0);
+// 关注数
+const followNum = ref(0);
 
 const showShare = ref(false);
 const options = [
@@ -115,8 +121,34 @@ onMounted(async () => {
   } else {
     console.error('用户数据为空');
   }
+  await getFollows(); // 获取用户关注数
+  await getFans(); // 获取用户粉丝数
 });
+/**
+ * 获取用户关注数量
+ */
+const getFollows = async () => {
+  const id = user.value.id;
+  const res = await myAxios.get(`/user/follows/${id}`);
+  if (res?.code === 0) {
+    followNum.value = res.data;
+  } else {
+    Toast.fail('获取关注数失败' + res?.description)
+  }
+}
 
+/**
+ * 获取用户粉丝数量
+ */
+const getFans = async () => {
+  const id = user.value.id;
+  const res = await myAxios.get(`/user/fans/${id}`);
+  if (res?.code === 0) {
+    fansNum.value = res.data;
+  } else {
+    Toast.fail('获取粉丝数失败' + res?.description)
+  }
+}
 
 const showPopup = () => {
   show.value = true;
