@@ -3,13 +3,13 @@
     <van-search
         v-model="searchText"
         show-action
-        placeholder="请输入要搜索的标签"
+        placeholder="请输入要搜索的账号或标签"
         @search="onSearch"
         @cancel="onCancel"
     />
   </form>
   <van-divider content-position="left">已选标签</van-divider>
-  <div v-if="activeIds.length === 0">请选择标签</div>
+  <div v-if="activeIds.length === 0" style="margin-left: 15px; color: gray; font-size: 14px;">还未选择标签</div>
   <van-row gutter="16" style="padding: 0 16px">
     <van-col v-for="tag in activeIds">
       <van-tag closeable size="small" type="primary" @close="doClose(tag)">
@@ -107,12 +107,21 @@ const doClose = (tag) => {
  * 执行搜索
  */
 const doSearchResult = () => {
-  router.push({
-    path: '/user/list',
-    query: {
-      tags: activeIds.value
-    }
-  })
+  if (activeIds.value.length === 0) {
+    router.push({
+      path: '/user/list',
+      query: {
+        userName: searchText.value
+      }
+    })
+  } else {
+    router.push({
+      path: '/user/list',
+      query: {
+        tags: activeIds.value
+      }
+    })
+  }
 }
 
 </script>

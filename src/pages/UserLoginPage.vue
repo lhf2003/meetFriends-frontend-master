@@ -1,4 +1,8 @@
 <template>
+  <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 0px">
+    <img style="height: 150px; width: 100%" src="http://cdn.meetfei.cn/meetFriends/login-banner.png"/>
+  </div>
+  <p style="font-weight: bold; margin-top: 0.5rem; text-align: center;">欢迎访问MeetFriends</p>
   <div class="form-container">
     <van-form @submit="onSubmit">
       <van-cell-group inset>
@@ -9,7 +13,7 @@
             placeholder="请输入账号"
             required
             :rules="[
-            { required: true, message: '请填写用户名' },
+            { required: true, message: '请填写账号' },
             { pattern: /^.{4,}$/, message: '账号长度必须大于等于4位' }
           ]"
         />
@@ -26,7 +30,7 @@
           ]"
         />
       </van-cell-group>
-      <div class="button-container">
+      <div style="margin: 16px;">
         <van-button round block :loading="isLoading" type="primary" native-type="submit">
           登录
         </van-button>
@@ -65,12 +69,12 @@
         <van-field
             v-model="newUserAccount"
             name="newUsername"
-            label="用户名"
-            placeholder="请输入用户名"
+            label="账号"
+            placeholder="请输入账号"
             required
             :rules="[
-            { required: true, message: '用户名不能为空' },
-            { pattern: /^.{4,}$/, message: '用户名长度必须大于等于4位' }
+            { required: true, message: '账号不能为空' },
+            { pattern: /^.{4,}$/, message: '账号长度必须大于等于4位' }
           ]"
         />
         <van-field
@@ -82,17 +86,6 @@
             :rules="[
             { required: true, message: '请填写邮箱或手机号' },
             { pattern: /^(1\d{10}|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})$/, message: '请输入有效的手机号或邮箱' }
-          ]"
-        />
-        <van-field
-            v-model="nickName"
-            name="nickName"
-            label="昵称"
-            placeholder="请输入昵称"
-            required
-            :rules="[
-            { required: true, message: '昵称不能为空' },
-            { pattern: /^.{3,}$/, message: '昵称长度必须大于等于3位' }
           ]"
         />
         <van-field
@@ -178,7 +171,7 @@ const onSubmit = async () => {
       Toast.success('登录成功');
       router.push('/');  // 使用 Vue Router 进行重定向
     } else {
-      Toast.fail('登录失败');
+      Toast.fail(res.description);
     }
   } catch (error) {
     if (error.message === '请求超时') {
@@ -272,21 +265,27 @@ const getVerificationCode = async () => {
 </script>
 
 <style scoped>
-.form-container {
-  padding: 16px;
-}
-
+/*
 .button-container {
   width: 250px;
   margin-left: 50px;
   margin-top: 16px;
   margin-bottom: 16px;
 }
+*/
 
 .link-container {
   display: flex;
   justify-content: space-between;
   margin-top: 8px;
+}
+
+.forgot-password-link {
+  margin-left: 10px;
+}
+
+.register-link {
+  margin-right: 10px;
 }
 
 .forgot-password-link,

@@ -1,57 +1,65 @@
+<!-- 搜索结果页 -->
 <template>
-  <user-card-list :user-list="userList"/>
   <van-empty v-if="!userList || userList.length < 1" description="搜索结果为空"/>
+  <div v-else>
+    <!-- 用户卡片列表 -->
+    <user-card-list :user-list="userList" :loading="loading"/>
+  </div>
+
 </template>
 
-<script setup lang="ts">
-import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import myAxios from '../plugins/myAxios';
-import { Toast } from 'vant';
+<script setup>
+import {onMounted, ref} from 'vue';
+import {useRoute} from "vue-router";
+import myAxios from '../plugins/myAxios.ts';
 import qs from 'qs';
-import UserCardList from '../components/UserCardList.vue';
+import UserCardList from "../components/UserCardList.vue";
 
-const route = useRoute();
-const { tags } = route.query;
+const route = useRoute(); // 获取查询参数
+const userList = ref([]); // 用户集合
+const loading = ref(true); // 骨架屏加载效果
+const query = route.query;
 
-const userList = ref([]);
-let toastId = null;
-
+// 组件加载完成后查找标签符合的用户
 onMounted(async () => {
-  // 显示加载中提示
-  toastId = Toast.loading('加载中...', { duration: 0 });
-
-  try {
-    const response = await myAxios.get('/user/search/tags', {
+  const response = ref();
+  if (query.userName) {
+    response.value = await myAxios.get('/user/search', {
       params: {
-        tagNameList: tags
+        userName: query.userName
       },
-      paramsSerializer: params => {
-        return qs.stringify(params, { indices: false });
-      }
     });
-
-    console.log('/user/search/tags succeed', response);
-    const userListData = response?.data || [];
-
-    // 处理用户数据
-    userListData.forEach(user => {
-      if (user.tags) {
-        user.tags = JSON.parse(user.tags);
-      }
+  } else {
+    response.value = await myAxios.get('/user/search/tags', {
+      params: {
+        tagNameList: query.tags
+      },
+      // 解析参数使得后端集合能够接收到
+      paramsSerializer: params => qs.stringify(params, {indices: false})
     });
-    userList.value = userListData;
-  } catch (error) {
-    console.error('/user/search/tags error', error);
-    Toast.fail('请求失败');
-  } finally {
-    // 隐藏加载中提示
-    if (toastId) {
-      Toast.clear(toastId);
-    }
   }
+  let userListData = response.value?.data || [];
+
+// 通过昵称查询结果不是数组，将其转换为数组
+  if (!Array.isArray(userListData)) {
+    userListData = [userListData];
+  }
+
+// 处理用户数据
+  userListData.forEach(user => {
+    if (user.tags) {
+      try {
+        user.tags = JSON.parse(user.tags);
+      } catch (e) {
+        console.error("Failed to parse tags:", e);
+      }
+    }
+  });
+  userList.value = userListData;
+  loading.value = false;
 });
 </script>
 
 <style scoped>
+
 </style>
