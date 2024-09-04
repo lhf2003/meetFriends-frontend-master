@@ -1,6 +1,6 @@
 <template>
   <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 0px">
-    <img style="height: 150px; width: 100%" src="http://cdn.meetfei.cn/meetFriends/login-banner.png"/>
+    <img style="height: 150px; width: 100%" src="../assets/banner.png"/>
   </div>
   <p style="font-weight: bold; margin-top: 0.5rem; text-align: center;">欢迎访问MeetFriends</p>
   <div class="form-container">

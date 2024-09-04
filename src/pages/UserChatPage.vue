@@ -40,7 +40,8 @@
           clearable
           class="input-field"
       />
-      <van-button type="primary" @click="sendMessage">↗</van-button>
+      <van-button type="primary" size="small" text="发送" style="border-radius: 5px; margin-top: 5px;"
+                  @click="sendMessage"/>
     </div>
   </div>
 </template>
@@ -73,8 +74,8 @@ onMounted(async () => {
   }
 
   // 连接 WebSocket
-  ws.value = new WebSocket('ws://meetfei.cn:7777/api/chat');//线上环境
-  // ws.value = new WebSocket('ws://localhost:8080/api/chat'); //本地环境
+  // ws.value = new WebSocket('ws://meetfei.cn:7777/api/chat');//线上环境
+  ws.value = new WebSocket('ws://localhost:8080/api/chat'); //本地环境
   ws.value.onopen = () => {
     isWsConnected.value = true; // WebSocket 连接建立成功
   };
@@ -128,7 +129,6 @@ const sendMessage = () => {
     scrollToBottom();
   }
 };
-
 const scrollToBottom = () => {
   nextTick(() => {
     if (messageList.value) {
@@ -264,7 +264,7 @@ const getChatUser = async () => {
 .chat-input {
   display: flex;
   height: 40px;
-  padding: 10px;
+  padding: 7px;
   background-color: #f7f7f7;
   position: sticky;
 }
@@ -273,7 +273,7 @@ const getChatUser = async () => {
   flex: 1;
   margin-right: 10px;
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 8px;
   padding-left: 10px;
 }
 
