@@ -26,8 +26,9 @@
         width="10rem"
         height="10rem"
         :src="currentUser.userAvatar"
+        style="box-shadow: 0px 5px 18px rgba(0, 0, 0, 0.7);"
     />
-    <p style="font-weight: bold; margin-top: 0.5rem; text-align: center;">{{ currentUser?.userName }}</p>
+    <p style=" font-weight: bold; margin-top: 0.5rem; text-align: center;">{{ currentUser?.userName }}</p>
   </div>
 
   <van-cell-group>
@@ -48,7 +49,8 @@
         {{ tag }}
       </van-tag>
     </div>
-    <div style="margin: auto">{{ currentUser.userProfile }}</div>
+    <van-cell v-if="currentUser.userProfile" title="个人简介" :label="currentUser.userProfile" size="large"/>
+
     <van-cell
         title="年龄"
         :value="currentUser.age"
