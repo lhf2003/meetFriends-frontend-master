@@ -7,6 +7,7 @@
         :thumb="ikun"
         :desc="team.description"
         :title="`${team.name}`"
+        @click="goToMembers(team)"
     >
       <template #tags>
         <van-tag plain type="danger" style="margin-right: 8px; margin-top: 8px">
@@ -60,6 +61,7 @@ import {Dialog, Toast} from "vant";
 import {onMounted, ref} from "vue";
 import {getCurrentUser} from "../services/user";
 import {useRouter} from "vue-router";
+import {useStore} from "vuex";
 
 interface TeamCardListProps {
   teamList: TeamType[];
@@ -74,6 +76,7 @@ const showPasswordDialog = ref(false);
 const password = ref('');
 const joinTeamId = ref(0);
 const currentUser = ref();
+const store = useStore();
 
 const router = useRouter();
 
@@ -93,6 +96,12 @@ const preJoinTeam = (team: TeamType) => {
 const doJoinCancel = () => {
   joinTeamId.value = 0;
   password.value = '';
+}
+const goToMembers = (team: TeamType) => {
+  store.commit('updateTeam', team);
+  router.push({
+    path: '/team/members',
+  })
 }
 
 /**

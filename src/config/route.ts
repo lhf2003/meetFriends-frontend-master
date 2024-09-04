@@ -16,20 +16,22 @@ import ChatPage from "../pages/ChatPage.vue";
 import UserFansPage from "../pages/UserFansPage.vue";
 import UserFollowersPage from "../pages/UserFollowersPage.vue";
 import UserChatPage from "../pages/UserChatPage.vue";
+import TeamMemberPage from "../pages/TeamMemberPage.vue";
 
 const routes = [
     {path: '/', component: Index},
     {path: '/team', title: '找队伍', component: Team},
     {path: '/team/add', title: '创建队伍', component: TeamAddPage},
     {path: '/team/update', title: '更新队伍', component: TeamUpdatePage},
+    {path: '/team/members', title: '队伍成员', component: TeamMemberPage},
     {path: '/user', title: '个人信息', component: UserPage},
     {path: '/search', title: '找伙伴', component: SearchPage},
     {path: '/user/list', title: '用户列表', component: SearchResultPage},
     {path: '/user/edit', title: '编辑信息', component: UserEditPage},
     {path: '/user/login', title: '登录', component: UserLoginPage},
     {path: '/user/update', title: '更新信息', component: UserUpdatePage},
-    {path: '/user/team/join', title: '加入队伍', component: UserTeamJoinPage},
-    {path: '/user/team/create', title: '创建队伍', component: UserTeamCreatePage},
+    {path: '/user/team/join', title: '我加入队伍', component: UserTeamJoinPage},
+    {path: '/user/team/create', title: '我创建队伍', component: UserTeamCreatePage},
     {
         path: '/user/details',
         title: '用户详情',
