@@ -4,11 +4,11 @@
   >
     <van-card
         v-for="team in props.teamList"
-        :thumb="ikun"
-        :desc="team.description"
+        :thumb="default_teamImg"
         :title="`${team.name}`"
         @click="goToMembers(team)"
     >
+
       <template #tags>
         <van-tag plain type="danger" style="margin-right: 8px; margin-top: 8px">
           {{
@@ -17,6 +17,9 @@
         </van-tag>
       </template>
       <template #bottom>
+        <div style="margin-top: 7px">
+          {{ '队伍简介：' + truncatedDescription(team.description) }}
+        </div>
         <div>
           {{ `队伍人数: ${team.hasJoinNum}/${team.maxNum}` }}
         </div>
@@ -55,7 +58,7 @@
 <script setup lang="ts">
 import {TeamType} from "../models/team";
 import {teamStatusEnum} from "../constants/team";
-import ikun from '../assets/ikun.png';
+import default_teamImg from '../assets/default-team.png';
 import myAxios from "../plugins/myAxios";
 import {Dialog, Toast} from "vant";
 import {onMounted, ref} from "vue";
@@ -166,7 +169,18 @@ const doDeleteTeam = async (id: number) => {
     Toast.fail('操作失败' + (res.description ? `，${res.description}` : ''));
   }
 }
+const truncatedDescription = (description: string) => {
+  const maxLength = 15; // 设置最大字符数
+  const regex = new RegExp(`^.{0,${maxLength}}`); // 匹配0到maxLength个字符
+  const match = description.match(regex); // 匹配描述
 
+  // 判断是否超出最大长度
+  if (description.length > maxLength) {
+    return match[0] + '...'; // 超过字数添加 "..."
+  } else {
+    return description; // 不超过直接返回
+  }
+}
 </script>
 
 <style scoped>
@@ -174,4 +188,5 @@ const doDeleteTeam = async (id: number) => {
   height: 128px;
   object-fit: unset;
 }
+
 </style>

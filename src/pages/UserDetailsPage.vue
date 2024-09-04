@@ -48,10 +48,7 @@
         {{ tag }}
       </van-tag>
     </div>
-    <van-cell
-        title="个人简介"
-        :value="currentUser.userProfile"
-    />
+    <div style="margin: auto">{{ currentUser.userProfile }}</div>
     <van-cell
         title="年龄"
         :value="currentUser.age"
